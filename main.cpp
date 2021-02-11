@@ -22,10 +22,25 @@ struct Activity {
 std::vector <Activity> actVector;
 std::vector <int> outVector;
 
-bool compare(Activity activity1, Activity activity2){
-  if (activity1.timeEnd < activity2.timeEnd)
-    return true;
-  return false;
+std::vector<Activity> insert_sort(std::vector<Activity> v){
+  int i, key, j, n;
+  n = v.size();
+    for (i = 1 ; i < n; i++) { //start at 1 not 0
+      // std::cout << "begining of for loop" << '\n';
+      key = v[i].timeEnd; //set key
+      j = i - 1; // set key - 1
+      /*moving elements of v that are greater than the key
+      to one pos ahead of their current pos*/
+      while (j >= 0 && v[j].timeEnd > key) {
+        // std::cout << "begining of while loop" << '\n';
+        v[j + 1].timeEnd = v[j].timeEnd;
+        j = j - 1;
+      //end while loop
+      }
+      v[j + 1].timeEnd = key;
+  //end for loop
+  }
+  return v;
 }
 
 void print_output(int set){
@@ -44,10 +59,10 @@ void print_output(int set){
 // Select the activity with least possible timeEnd at each step.
 void select_act(int num){
   int i = 0;
-  int sizeOut = 0;
-  sizeOut++;
-  sizeOut.resize(sizeOut);
-  sizeOut[sizeOut - 1] = actVector[0].index;
+  int outSize = 0;
+  outSize++;
+  outVector.resize(outSize);
+  outVector[outSize - 1] = actVector[0].index;
   for (int j = 1; j < num; j++){
     if (actVector[j].timeStart >= actVector[i].timeEnd){
       outSize++;
@@ -61,25 +76,25 @@ void select_act(int num){
 
 int main(){
   std::ifstream file;
-  if (myFile.is_open()){
+  if (file.is_open()){
     int numAct = 0; // num  acitivities
     int set = 0;
     Activity temp;
-    while (!myFile.eof()){
+    while (!file.eof()){
       actVector.clear();
-      myFile >> numAct;
+      file >> numAct;
       for (int i = 0; i < numAct; ++i){
-        myFile >> temp.index;
-        myFile >> temp.timeStart;
-        myFile >> temp.timeEnd;
+        file >> temp.index;
+        file >> temp.timeStart;
+        file >> temp.timeEnd;
         actVector.push_back(temp);
       }
-      sort(actVector.begin(), actVector.end(), compare);
+      insert_sort(actVector);
       select_act(numAct);
       set++;
       print_output(set);
     }
-    myFile.close();
+    file.close();
   } else {
     std::cout << "Unable to open file";
   }
